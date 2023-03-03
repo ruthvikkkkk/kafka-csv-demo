@@ -32,6 +32,8 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Autowired
     FileRepository fileRepository;
+    int count = 0, totalSize = 0;
+    String fileName = "";
 
     private static final String TOPIC = "OrderTopic";
 
@@ -72,83 +74,54 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Override
     public String saveFile(File file) {
-        final long[] offset = new long[1];
         try{
-
+            fileName = file.getName();
+            count = 0;
+            totalSize = 0;
             CSVReader csvReader = new CSVReader(new FileReader(file));
-            CSVReader csvReader2 = new CSVReader(new FileReader(file));
-            csvReader.readNext();
 
-            int count = 0;
-            String[] values = csvReader.readNext();
-            Integer totalSize = csvReader2.readAll().size()-1;
-            //kafkaTemplate.send(TOPIC, totalSize);
-            do {
+            List<String[]> stringList = csvReader.readAll();
+            stringList.remove(0);
+            totalSize = stringList.size() - 1;
+
+            stringList.forEach(strings -> {
                 count++;
-                OrderDTO orderDTO = OrderDTO.builder()
-                        .totalCost(Integer.parseInt(values[0]))
-                        .totalQty(Integer.parseInt(values[1]))
-                        .fileName("")
-                        .build();
-
-                if(!(count == totalSize)){
-
-                    int finalCount = count;
-                    kafkaTemplate.send(TOPIC, orderDTO)
-                            .addCallback(new ListenableFutureCallback() {
-                                @Override
-                                public void onFailure(Throwable ex) {
-
-                                }
-
-                                @Override
-                                public void onSuccess(Object result) {
-                                    //offset[0] = ((SendResult) result).getRecordMetadata().offset();
-                                    System.out.println(finalCount);
-                                }
-                            });
-
-                }else{
-
-                    orderDTO.setFileName(file.getName());
-                    kafkaTemplate.send(TOPIC, 4, "last record", orderDTO)
-                            .addCallback(new ListenableFutureCallback() {
-                                @Override
-                                public void onFailure(Throwable ex) {
-
-                                }
-
-                                @Override
-                                public void onSuccess(Object result) {
-                                    System.out.println("all messages pushed!");
-                                }
-                            });
-                }
-
-//                ListenableFuture<SendResult> futureResult = kafkaTemplate.send(TOPIC, orderDTO);
-//                futureResult.addCallback(new ListenableFutureCallback() {
-//                    @Override
-//                    public void onFailure(Throwable ex) {
-//                        ex.printStackTrace();
-//                    }
-//
-//                    @Override
-//                    public void onSuccess(Object result) {
-//                        offset[0] = ((SendResult) result).getRecordMetadata().offset();
-//                        System.out.println(((SendResult) result).getRecordMetadata().offset());
-//                        if(offset[0] == totalSize){
-//                            System.out.println("All messages pushed to kafka");
-//                            //fileRepository.updateStatus(file.getName());
-//                        }else{
-//                            System.out.println();
-//                        }
-//                    }
-//                });
-            }while((values = csvReader.readNext()) != null);
+                OrderDTO orderDTO = new OrderDTO(Integer.parseInt(strings[0]), Integer.parseInt(strings[1]), "");
+                publishMessage(orderDTO);
+            });
             return "saved file!";
         }catch (Exception e){
             e.printStackTrace();
             return "could not save!";
+        }
+    }
+
+    private void publishMessage(OrderDTO orderDTO) {
+        if(!(count == totalSize)){
+            kafkaTemplate.send(TOPIC, orderDTO).addCallback(new ListenableFutureCallback() {
+                @Override
+                public void onFailure(Throwable ex) {
+                    ex.printStackTrace();
+                }
+
+                @Override
+                public void onSuccess(Object result) {
+                    System.out.println(count);
+                }
+            });
+        }else{
+            orderDTO.setFileName(fileName);
+            kafkaTemplate.send(TOPIC, "last record", orderDTO).addCallback(new ListenableFutureCallback() {
+                @Override
+                public void onFailure(Throwable ex) {
+                    ex.printStackTrace();
+                }
+
+                @Override
+                public void onSuccess(Object result) {
+                    System.out.println("All Messages Published!");
+                }
+            });
         }
     }
 
@@ -172,8 +145,6 @@ public class FileStorageServiceImpl implements FileStorageService {
 
                 csvWriter.writeAll(orderList);
                 csvWriter.close();
-
-                FileReader reader = new FileReader(file);
 
                 return "done";
             } catch (Exception e) {
