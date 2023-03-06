@@ -6,6 +6,7 @@ import com.example.fileproducer.service.FileStorageService;
 import com.example.repository.FileRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import org.apache.kafka.streams.kstream.KStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ import java.util.Random;
 public class FileStorageServiceImpl implements FileStorageService {
 
     //declarations and stuff
+    KStream kStream;
+
     private final Path root = Paths.get("temp-file-dir");
     @Autowired
     KafkaTemplate kafkaTemplate;
@@ -97,6 +100,7 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     private void publishMessage(OrderDTO orderDTO) {
         if(!(count == totalSize)){
+
             kafkaTemplate.send(TOPIC, orderDTO);
             System.out.println(count);
         }else{
