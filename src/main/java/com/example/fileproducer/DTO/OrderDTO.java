@@ -15,4 +15,6 @@ public class OrderDTO implements Serializable {
     private Integer totalCost;
     private Integer totalQty;
     private String fileName;
+
+//    private boolean lastRecord;
 }

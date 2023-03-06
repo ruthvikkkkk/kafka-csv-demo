@@ -66,36 +66,15 @@ public class MyKafkaConsumer {
                             .build();
             orderRepository.save(orderEntity);
             try {
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
-//            if(!orderEntity.getFileName().equals("")){
-//                Optional<FileEntity> optionalFile = fileRepository.findById(orderEntity.getFileName());
-//                if(optionalFile.isPresent()) {
-//                    fileRepository.updateStatus(orderEntity.getFileName());
-//
-//                    System.out.println("handler1\n" + "prev - " + this.count + "\nnow - " + orderRepository.count());
-//                    System.out.println("Finished");
-//                    this.count = getRepoCount();
-//                }
-//            }
-
-//            if((getRepoCount()) == (this.messagesToReceive + this.count)){
-//                    System.out.println("prev - " + this.count + "\nnow -" + orderRepository.count());
-//                    System.out.println("Finished");
-//                    this.count = getRepoCount();
-//                    List<FileEntity> fileEntityList = fileRepository.findAll().stream()
-//                            .peek(fileEntity -> fileEntity.setStatus("finished uploading!"))
-//                            .map(fileRepository::save)
-//                            .collect(Collectors.toList());
-//
-//            }
         }
     }
 
 //handler two
+
     @KafkaListener(topicPartitions = {
             @TopicPartition(topic = "OrderTopic", partitions = {"1"})
     }, groupId = "my_consumer")
@@ -113,32 +92,10 @@ public class MyKafkaConsumer {
                     .build();
             orderRepository.save(orderEntity);
             try {
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
-//            if(!orderEntity.getFileName().equals("")){
-//                Optional<FileEntity> optionalFile = fileRepository.findById(orderEntity.getFileName());
-//                if(optionalFile.isPresent()) {
-//                    fileRepository.updateStatus(orderEntity.getFileName());
-//
-//                    System.out.println("handler1\n" + "prev - " + this.count + "\nnow - " + orderRepository.count());
-//                    System.out.println("Finished");
-//                    this.count = getRepoCount();
-//                }
-//            }
-
-//            if((getRepoCount()) == (this.messagesToReceive + this.count)){
-//                    System.out.println("prev - " + this.count + "\nnow -" + orderRepository.count());
-//                    System.out.println("Finished");
-//                    this.count = getRepoCount();
-//                    List<FileEntity> fileEntityList = fileRepository.findAll().stream()
-//                            .peek(fileEntity -> fileEntity.setStatus("finished uploading!"))
-//                            .map(fileRepository::save)
-//                            .collect(Collectors.toList());
-//
-//            }
         }
     }
 
@@ -159,32 +116,10 @@ public class MyKafkaConsumer {
                     .build();
             orderRepository.save(orderEntity);
             try {
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
-//            if(!orderEntity.getFileName().equals("")){
-//                Optional<FileEntity> optionalFile = fileRepository.findById(orderEntity.getFileName());
-//                if(optionalFile.isPresent()) {
-//                    fileRepository.updateStatus(orderEntity.getFileName());
-//
-//                    System.out.println("handler2\n" + "prev - " + this.count + "\nnow - " + orderRepository.count());
-//                    System.out.println("Finished");
-//                    this.count = getRepoCount();
-//                }
-//            }
-
-//            if((getRepoCount()) == (this.messagesToReceive + this.count)){
-//                    System.out.println("prev - " + this.count + "\nnow -" + orderRepository.count());
-//                    System.out.println("Finished");
-//                    this.count = getRepoCount();
-//                    List<FileEntity> fileEntityList = fileRepository.findAll().stream()
-//                            .peek(fileEntity -> fileEntity.setStatus("finished uploading!"))
-//                            .map(fileRepository::save)
-//                            .collect(Collectors.toList());
-//
-//            }
         }
     }
 
@@ -205,32 +140,10 @@ public class MyKafkaConsumer {
                     .build();
             orderRepository.save(orderEntity);
             try {
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
-//            if(!orderEntity.getFileName().equals("")){
-//                Optional<FileEntity> optionalFile = fileRepository.findById(orderEntity.getFileName());
-//                if(optionalFile.isPresent()) {
-//                    fileRepository.updateStatus(orderEntity.getFileName());
-//
-//                    System.out.println("handler2\n" + "prev - " + this.count + "\nnow - " + orderRepository.count());
-//                    System.out.println("Finished");
-//                    this.count = getRepoCount();
-//                }
-//            }
-
-//            if((getRepoCount()) == (this.messagesToReceive + this.count)){
-//                    System.out.println("prev - " + this.count + "\nnow -" + orderRepository.count());
-//                    System.out.println("Finished");
-//                    this.count = getRepoCount();
-//                    List<FileEntity> fileEntityList = fileRepository.findAll().stream()
-//                            .peek(fileEntity -> fileEntity.setStatus("finished uploading!"))
-//                            .map(fileRepository::save)
-//                            .collect(Collectors.toList());
-//
-//            }
         }
     }
 
@@ -251,7 +164,7 @@ public class MyKafkaConsumer {
                     .build();
             orderRepository.save(orderEntity);
             try {
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -266,17 +179,6 @@ public class MyKafkaConsumer {
                     this.count = getRepoCount();
                 }
             }
-
-//            if((getRepoCount()) == (this.messagesToReceive + this.count)){
-//                    System.out.println("prev - " + this.count + "\nnow -" + orderRepository.count());
-//                    System.out.println("Finished");
-//                    this.count = getRepoCount();
-//                    List<FileEntity> fileEntityList = fileRepository.findAll().stream()
-//                            .peek(fileEntity -> fileEntity.setStatus("finished uploading!"))
-//                            .map(fileRepository::save)
-//                            .collect(Collectors.toList());
-//
-//            }
         }
     }
 }

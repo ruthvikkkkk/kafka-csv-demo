@@ -9,7 +9,6 @@ import com.opencsv.CSVWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -73,7 +72,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public String saveFile(File file) {
+    public String saveFile(File file)        {
         try{
             fileName = file.getName();
             count = 0;
@@ -98,30 +97,12 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     private void publishMessage(OrderDTO orderDTO) {
         if(!(count == totalSize)){
-            kafkaTemplate.send(TOPIC, orderDTO).addCallback(new ListenableFutureCallback() {
-                @Override
-                public void onFailure(Throwable ex) {
-                    ex.printStackTrace();
-                }
-
-                @Override
-                public void onSuccess(Object result) {
-                    System.out.println(count);
-                }
-            });
+            kafkaTemplate.send(TOPIC, orderDTO);
+            System.out.println(count);
         }else{
             orderDTO.setFileName(fileName);
-            kafkaTemplate.send(TOPIC, "last record", orderDTO).addCallback(new ListenableFutureCallback() {
-                @Override
-                public void onFailure(Throwable ex) {
-                    ex.printStackTrace();
-                }
-
-                @Override
-                public void onSuccess(Object result) {
-                    System.out.println("All Messages Published!");
-                }
-            });
+            kafkaTemplate.send(TOPIC, orderDTO);
+            System.out.println("last message published!");
         }
     }
 
@@ -153,5 +134,4 @@ public class FileStorageServiceImpl implements FileStorageService {
             }
         }
     }
-
 }
