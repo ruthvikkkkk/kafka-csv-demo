@@ -11,7 +11,7 @@ public class KafkaTopicConfig {
     public NewTopic FileTopic() {
 
         return TopicBuilder.name("OrderTopic")
-                .partitions(5)
+                .partitions(2)
                 .build();
     }
 }
